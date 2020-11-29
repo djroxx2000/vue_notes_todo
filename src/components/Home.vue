@@ -41,7 +41,7 @@ export default defineComponent({
 <template>
   <div class="home">
     <div class="navbar">
-      Note / Todos
+      Notes / Todos
       <!-- <button class="btn" @click="setIDB">Switch?</button>
       <button class="btn" @click="getIDB">Theme?</button> -->
     </div>
