@@ -41,8 +41,9 @@ export default defineComponent({
 <template>
   <div class="home">
     <div class="navbar">
-      <button class="btn" @click="setIDB">Switch?</button>
-      <button class="btn" @click="getIDB">Theme?</button>
+      Note / Todos
+      <!-- <button class="btn" @click="setIDB">Switch?</button>
+      <button class="btn" @click="getIDB">Theme?</button> -->
     </div>
     <div class="grid-wrapper">
       <div class="left-bar">
@@ -66,10 +67,13 @@ export default defineComponent({
 
 .navbar {
   background: #2c3e50;
+  color: white;
+  font-size: 1.5em;
   padding: 10px;
-  display: flex;
-  flex-direction: row-reverse;
-  align-content: center;
+  // display: flex;
+  // flex-direction: row-reverse;
+  // align-content: center;
+  text-align: center;
 }
 
 .btn {
@@ -90,7 +94,6 @@ export default defineComponent({
 }
 .left-bar {
   padding: 10px;
-  border-radius: 2px;
   display: flex;
   flex-direction: column;
 }
@@ -104,12 +107,12 @@ export default defineComponent({
 }
 
 .right-bar {
-  border-radius: 2px;
   // width: auto;
   margin: 10px;
   margin-left: 5px;
-  overflow-y: scroll;
+  overflow-y: auto;
   border: 1px solid black;
+  border-radius: 6px;
 }
 
 .notes-box {

@@ -22,7 +22,14 @@ export default defineComponent({
     });
 
     const incompleteTodos = computed(() => {
-      const incomplete = store.state.todos.filter(todo => !todo.completed);
+      const incomplete = store.state.todos
+        .filter(todo => !todo.completed)
+        .sort((t1, t2) => {
+          if (t1.end == "") return 1;
+          if (Date.parse(t1.end) < Date.parse(t2.end)) return -1;
+          else if (Date.parse(t1.end) > Date.parse(t2.end)) return 1;
+          else return 0;
+        });
       return incomplete;
     });
 
@@ -45,7 +52,9 @@ export default defineComponent({
 <style scoped lang="scss">
 #todos {
   border: 1px solid black;
-  overflow-y: scroll;
+  // border-right: none;
+  border-radius: 6px;
+  overflow-y: auto;
   height: 390px;
 }
 @media screen and (max-width: 625px) {

@@ -63,17 +63,16 @@ export default defineComponent({
         newNote.title = elements.title;
         const today = new Date();
         newNote.iat =
+          today.getHours() +
+          ":" +
+          today.getMinutes() +
+          // ":" +
+          " | " +
           today.getFullYear() +
           "-" +
           (today.getMonth() + 1) +
           "-" +
-          today.getDate() +
-          " " +
-          today.getHours() +
-          ":" +
-          today.getMinutes() +
-          ":" +
-          today.getSeconds();
+          today.getDate();
 
         store.commit(MutationTypes.createNote, newNote);
         store.dispatch(ActionTypes.setNoteItems, undefined);
@@ -104,7 +103,17 @@ export default defineComponent({
         placeholder="Title"
       />
     </div>
-    <div class="content-div">
+    <div class="content-div" v-if="elements.isTodo">
+      <textarea
+        style="padding: 5px;"
+        name="content"
+        id="content-input"
+        v-model="elements.content"
+        placeholder="Type the task here and its end date below..."
+      >
+      </textarea>
+    </div>
+    <div class="content-div" v-if="elements.isNote">
       <textarea
         style="padding: 5px;"
         name="content"

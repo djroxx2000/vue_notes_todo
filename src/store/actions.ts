@@ -9,7 +9,10 @@ export enum ActionTypes {
   getNoteItems = "GET_NOTES",
   setNoteItems = "SET_NOTES",
   completeTodoItem = "COMPLETE_TODO_ITEM",
-  removeTodoItem = "REMOVE_TODO"
+  removeTodoItem = "REMOVE_TODO",
+  editTodoItem = "EDIT_TODO",
+  removeNoteItem = "REMOVE_NOTE",
+  editNoteItem = "EDIT_NOTE"
 }
 
 // Augment action context for checking mutation types and params while committing
@@ -27,18 +30,18 @@ export type Actions = {
   [ActionTypes.getNoteItems](context: ActionAugment): void;
   [ActionTypes.setNoteItems](context: ActionAugment): void;
   [ActionTypes.removeTodoItem](context: ActionAugment, todoId: number): void;
+  [ActionTypes.editTodoItem](context: ActionAugment, todoId: number): void;
+  [ActionTypes.removeNoteItem](context: ActionAugment, noteId: number): void;
   [ActionTypes.completeTodoItem](
     context: ActionAugment,
-    todo: Record<string, any>
+    todo: Record<string, unknown>
   ): void;
 };
 
 // Action tree takes state and root state. Both refer to the same here.
 
 export const actions: ActionTree<State, State> & Actions = {
-  async [ActionTypes.getTodoItems]({ state, commit }) {
-    commit(MutationTypes.setLoading, true);
-
+  async [ActionTypes.getTodoItems]({ state }) {
     const db = await idbAccess();
     if (db) {
       // type check db result to be a todoitem array
@@ -49,8 +52,6 @@ export const actions: ActionTree<State, State> & Actions = {
     } else {
       console.log("Unable to form connection to IDB");
     }
-
-    commit(MutationTypes.setLoading, false);
   },
   async [ActionTypes.setTodoItems]({ state }) {
     const db = await idbAccess();
@@ -70,7 +71,9 @@ export const actions: ActionTree<State, State> & Actions = {
     }
   },
   async [ActionTypes.completeTodoItem]({ commit }, todo) {
-    commit(MutationTypes.completeTodo, todo.id);
+    if (typeof todo.id === "number") {
+      commit(MutationTypes.completeTodo, todo.id);
+    }
     const newTodo = {
       id: todo.id,
       text: todo.text,
@@ -82,9 +85,29 @@ export const actions: ActionTree<State, State> & Actions = {
       await db.put("todos", newTodo);
     }
   },
-  async [ActionTypes.getNoteItems]({ state, commit }) {
-    commit(MutationTypes.setLoading, true);
-
+  async [ActionTypes.removeTodoItem]({ state }, todoId) {
+    const db = await idbAccess();
+    if (db) {
+      db.delete("todos", todoId);
+      console.log(state.todos[0].id);
+      console.log(todoId);
+      state.todos = state.todos.filter(todo => todo.id !== todoId);
+    }
+  },
+  async [ActionTypes.editTodoItem]({ state }, todoId) {
+    const db = await idbAccess();
+    if (db) {
+      const stateTodo = state.todos.find(todo => todo.id === todoId);
+      const todo = {
+        id: stateTodo?.id,
+        text: stateTodo?.text,
+        end: stateTodo?.end,
+        completed: stateTodo?.completed
+      };
+      db.put("todos", todo);
+    }
+  },
+  async [ActionTypes.getNoteItems]({ state }) {
     const db = await idbAccess();
     if (db) {
       const noteData = (await db.getAll("notes")) as NoteItem[];
@@ -94,8 +117,6 @@ export const actions: ActionTree<State, State> & Actions = {
     } else {
       console.log("Unable to form connection to IDB");
     }
-
-    commit(MutationTypes.setLoading, false);
   },
   async [ActionTypes.setNoteItems]({ state }) {
     const db = await idbAccess();
@@ -112,13 +133,13 @@ export const actions: ActionTree<State, State> & Actions = {
       console.log("Unable to make connection with IDB");
     }
   },
-  async [ActionTypes.removeTodoItem]({ state }, todoId) {
+  async [ActionTypes.removeNoteItem]({ state }, noteId) {
     const db = await idbAccess();
     if (db) {
-      db.delete("todos", todoId);
-      console.log(state.todos[0].id);
-      console.log(todoId);
-      state.todos = state.todos.filter(todo => todo.id !== todoId);
+      db.delete("notes", noteId);
+      console.log(state.notes[0].id);
+      console.log(noteId);
+      state.notes = state.notes.filter(note => note.id !== noteId);
     }
   }
 };

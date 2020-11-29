@@ -32,7 +32,6 @@ async function idbAccess() {
         console.log("Unexpected termination to IDB connection");
       }
     });
-    console.log("here");
 
     return db;
   } catch (error) {
