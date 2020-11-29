@@ -32,6 +32,7 @@ export type Actions = {
   [ActionTypes.removeTodoItem](context: ActionAugment, todoId: number): void;
   [ActionTypes.editTodoItem](context: ActionAugment, todoId: number): void;
   [ActionTypes.removeNoteItem](context: ActionAugment, noteId: number): void;
+  [ActionTypes.editNoteItem](context: ActionAugment, noteId: number): void;
   [ActionTypes.completeTodoItem](
     context: ActionAugment,
     todo: Record<string, unknown>
@@ -140,6 +141,30 @@ export const actions: ActionTree<State, State> & Actions = {
       console.log(state.notes[0].id);
       console.log(noteId);
       state.notes = state.notes.filter(note => note.id !== noteId);
+    }
+  },
+  async [ActionTypes.editNoteItem]({ state }, noteId) {
+    const db = await idbAccess();
+    if (db) {
+      const stateNote = state.notes.find(note => note.id === noteId);
+      const today = new Date();
+
+      const note = {
+        id: stateNote?.id,
+        text: stateNote?.text,
+        title: stateNote?.title,
+        iat:
+          today.getHours() +
+          ":" +
+          today.getMinutes() +
+          " | " +
+          today.getFullYear() +
+          "-" +
+          (today.getMonth() + 1) +
+          "-" +
+          today.getDate()
+      };
+      db.put("notes", note);
     }
   }
 };

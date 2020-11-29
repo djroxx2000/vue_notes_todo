@@ -71,7 +71,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="edit_modal" v-if="elements.showEdit">
+  <div class="edit_todo" v-if="elements.showEdit">
     <div>
       <textarea
         style="padding: 5px;"

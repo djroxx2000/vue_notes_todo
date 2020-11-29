@@ -11,7 +11,10 @@ export default defineComponent({
   setup(props) {
     const store = useStore();
     const elements = reactive({
-      showEdit: false
+      showEdit: false,
+      content: props.note ? props.note.text : "",
+      title: props.note ? props.note.title : "",
+      iat: props.note ? props.note.iat : ""
     });
 
     function deleteNote(): void {
@@ -20,13 +23,25 @@ export default defineComponent({
       }
     }
 
-    return { elements, deleteNote };
+    function editNote(): void {
+      const index = store.state.notes.findIndex(note =>
+        props.note ? note.id == props.note.id : false
+      );
+      store.state.notes[index].text = elements.content;
+      store.state.notes[index].title = elements.title;
+      if (props.note) {
+        store.dispatch(ActionTypes.editNoteItem, props.note.id);
+      }
+      elements.showEdit = false;
+    }
+
+    return { elements, deleteNote, editNote };
   }
 });
 </script>
 
 <template>
-  <div class="note">
+  <div class="note" v-if="!elements.showEdit">
     <div class="top_bar">
       <div class="note_title">
         {{ note.title }}
@@ -44,6 +59,23 @@ export default defineComponent({
     </div>
     <div class="date">
       {{ note.iat }}
+    </div>
+  </div>
+  <div class="edit_note note" v-if="elements.showEdit">
+    <div class="top_bar">
+      <div class="note_title full-width">
+        <input type="text" v-model="elements.title" class="input" />
+      </div>
+      <div class="note_tooltip">
+        <i class="fas fa-check" @click="editNote"></i>
+      </div>
+    </div>
+    <div class="note_content">
+      <textarea
+        name="note_text"
+        v-model="elements.content"
+        style="padding: 5px; width: 90%; height: 80%;"
+      ></textarea>
     </div>
   </div>
 </template>
