@@ -152,6 +152,11 @@ export default defineComponent({
   }
 }
 
+.full-width {
+  width: 100%;
+  margin-top: 5px;
+}
+
 .todo {
   // display: flex;
   // flex-direction: row;

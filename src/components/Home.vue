@@ -93,6 +93,7 @@ export default defineComponent({
   grid-template-columns: minmax(300px, 1fr) minmax(300px, 3fr);
 }
 .left-bar {
+  height: 92%;
   padding: 10px;
   display: flex;
   flex-direction: column;
@@ -108,6 +109,8 @@ export default defineComponent({
 
 .right-bar {
   // width: auto;
+  height: 92%;
+
   margin: 10px;
   margin-left: 5px;
   overflow-y: auto;
@@ -132,7 +135,11 @@ export default defineComponent({
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
     // grid-template-rows: repeat(auto-f, minmax(400px, 1fr));
   }
+  .left-bar {
+    height: auto;
+  }
   .right-bar {
+    height: auto;
     overflow-y: visible;
     margin: 10px;
   }

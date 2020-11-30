@@ -93,17 +93,18 @@ export default defineComponent({
 
 <template>
   <div class="input-container">
-    <div class="full-width">
+    <div class="full-width" v-if="elements.isNote">
+      <span class="input-tag">Title: </span>
       <input
         type="text"
         name="title"
         v-model="elements.title"
-        v-if="elements.isNote"
         class="input"
         placeholder="Title"
       />
     </div>
     <div class="content-div" v-if="elements.isTodo">
+      <span class="input-tag">Task:</span>
       <textarea
         style="padding: 5px;"
         name="content"
@@ -114,6 +115,7 @@ export default defineComponent({
       </textarea>
     </div>
     <div class="content-div" v-if="elements.isNote">
+      <span class="input-tag">Note:</span>
       <textarea
         style="padding: 5px;"
         name="content"
@@ -124,6 +126,7 @@ export default defineComponent({
       </textarea>
     </div>
     <div class="full-width" v-if="elements.isTodo">
+      <span class="input-tag">End By:</span>
       <input
         type="date"
         name="end-date"
@@ -150,7 +153,7 @@ export default defineComponent({
       </button>
     </div>
     <div class="add-new">
-      <button class="input-btn full-width" @click="addNew">
+      <button class="input-btn" style="width: 100%;" @click="addNew">
         Add
       </button>
     </div>
@@ -167,10 +170,20 @@ export default defineComponent({
   width: 100%;
 }
 
+.input-tag {
+  font-weight: bold;
+}
+
 .input {
   width: 95%;
   padding: 5px;
   margin-bottom: 5px;
+  margin-top: 5px;
+  flex-grow: 1;
+}
+
+.content-div > * {
+  margin-top: 5px;
 }
 
 .input-btn {
@@ -194,6 +207,7 @@ export default defineComponent({
 
 .full-width {
   width: 100%;
+  margin-top: 5px;
 }
 
 .selected {
